@@ -43,10 +43,11 @@ end
 #TODO may not need this
 
 class Board
-  attr_accessor :boardArray
+  attr_accessor :boardArray, :board
 
   def initialize
-    @boardArray = []
+    @boardArray ||= []
+    @board = self
   #  #Hash implementation
   #  @board = Hash.new "--"
   #   (1..8).each do |num|
@@ -69,6 +70,17 @@ class Board
   end
 
   def check_moves(moveList)
+
+  end
+
+  def make_move(start, finish)
+    startRow = @board.convert_location_to_row(start)
+    startCol = @board.convert_location_to_col(start)
+    finishRow = @board.convert_location_to_row(finish)
+    finishCol = @board.convert_location_to_col(finish)
+
+    self.boardArray[finishRow][finishCol] = boardArray[startRow][startCol]
+    self.boardArray[startRow][startCol] = '--'
 
   end
 
@@ -159,74 +171,116 @@ class Pawn < Piece
     takingPiece = false
     regMove = false
     startJump = false
-    isValid = ''
     startRow = @board.convert_location_to_row(start)
     startCol = @board.convert_location_to_col(start)
     finishRow = @board.convert_location_to_row(finish)
     finishCol = @board.convert_location_to_col(finish)
 
+    #TODO fix syntax
     regMove = true if (startCol==finishCol && (startRow + @direction) == finishRow && @board.get_piece_at_location(finish) == "--")
 
-    #The first check verifies the piece is on the starting row
+    #The first check verifies the piece is on the starting row, TODO fix syntax
     startJump = true if (startRow==(3.5+(2.5*@direction)) && (startRow + (@direction * 2)) == finishRow && @board.get_piece_at_location(finish) == "--" && @board.boardArray[finish[0]][finish[1]-@direction] == "--")
 
-    #TODO takingPiece
+    #TODO Fix syntax
     takingPiece = true if ((startRow + @direction) == finishRow && (finishCol-startCol).abs == 1 && board.get_piece_at_location(finish)[1] != @color)
 
-    #TODO fix syntax
     if (takingPiece || regMove || startJump)
-      isValid = "LEGAL"
-    else
-      isValid "ILLEGAL"
+      tempBoard = @board
+      tempBoard.make_move(start, finish)
+      if false #TODO if tempBoard.king_in_check?(@color, )
+        return "ILLEGAL"
+      else
+        return "LEGAL"
+      end
     end
+    'ILLEGAL'
   end
-
-
 end
 
 module Rook < Piece
 
   def check_move(start, finish)
-    isLine = false
-    direction = false
-    direction = 'col' if start[0]==finish[0]
-    direction = 'row' if start[1]==finish[1]
+    startRow = @board.convert_location_to_row(start)
+    startCol = @board.convert_location_to_col(start)
+    finishRow = @board.convert_location_to_row(finish)
+    finishCol = @board.convert_location_to_col(finish)
 
-    #check move is a line
-    return "ILLEGAL" if !(direction)
-
-    #check end location is not occupied by team
-    endContains = board[finish]
-    return "ILLEGAL" if endContains[0] == self.color
-
-    #check no pieces are jumped
-    case direction
-    when 'col'
-      #TODO stop short of final pos
-      #TODO ask about this syntax (single line would be long)
-      (start[0]..(finish[0])).each do |pos|
-        return "ILLEGAL" if boardArray[pos][start[1]] != "--"
-      end
-    when 'row'
-      #TODO stop short of final pos
-      (start[1]..(finish[1])).each do |pos|
-        return "ILLEGAL" if boardArray[start[0]][pos] != "--"
+    #TODO fix syntax
+    if valid_vertical_line(startRow, finishRow, startCol, @color) || valid_horizontal_line(startCol, finishCol, startRow, @color)
+      tempBoard = @board
+      tempBoard.make_move(start, finish)
+      if false #TODO if tempBoard.king_in_check?(@color, )
+        return "ILLEGAL"
+      else
+        return "LEGAL"
       end
     end
-    "LEGAL"
+    "ILLEGAL"
   end
 end
 
 module Knight
   extend self, Piece
+
+  def check_move(start, finish)
+    startRow = @board.convert_location_to_row(start)
+    startCol = @board.convert_location_to_col(start)
+    finishRow = @board.convert_location_to_row(finish)
+    finishCol = @board.convert_location_to_col(finish)
+    x_displacement = finishRow - startRow
+    y_displacement = finishCol - startCol
+    if [x_displacement.abs, y_displacement.abs].sort == [1, 2]
+      tempBoard = @board
+      tempBoard.make_move(start, finish)
+      if false #TODO if tempBoard.king_in_check?(@color, )
+        return "ILLEGAL"
+      else
+        return "LEGAL"
+      end
+    end
+    "ILLEGAL"
+  end
 end
 
 module Bishop
   extend self, Piece
+
+  def check_move(start, finish)
+    if valid_diagonal_line?(start, finish, @color)
+      tempBoard = @board
+      tempBoard.make_move(start, finish)
+      if false#TODO tempBoard.king_in_check?(@color, )
+        return "ILLEGAL"
+      else
+        return "LEGAL"
+      end
+    end
+    "ILLEGAL"
+  end
 end
 
 module Queen
   extend self, Piece
+
+  def check_move(start, finish)
+    startRow = @board.convert_location_to_row(start)
+    startCol = @board.convert_location_to_col(start)
+    finishRow = @board.convert_location_to_row(finish)
+    finishCol = @board.convert_location_to_col(finish)
+
+    #TODO fix syntax
+    if valid_vertical_line(startRow, finishRow, startCol, @color) || valid_horizontal_line(startCol, finishCol, startRow, @color) || valid_diagonal_line?(start, finish, @color)
+      tempBoard = @board
+      tempBoard.make_move(start, finish)
+      if false #TODO if tempBoard.king_in_check?(@color, )
+        return "ILLEGAL"
+      else
+        return "LEGAL"
+      end
+    end
+    "ILLEGAL"
+  end
 end
 
 module King
