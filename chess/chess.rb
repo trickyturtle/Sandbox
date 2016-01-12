@@ -7,7 +7,7 @@ require "awesome_print"
 puts Dir.pwd
 Dir.chdir(File.dirname(__FILE__))
 DEBUG_BOARD = false
-DEBUG_CV = true
+DEBUG_CV = false
 
 class ChessValidator
   def initialize
@@ -24,6 +24,7 @@ class ChessValidator
       @moveList.push(pair)
     end
     ap @moveList if DEBUG_CV
+    ap @moveList
   end
 
   def read_position(pair)
@@ -162,7 +163,7 @@ class Piece
 
 end
 
-class Pawn < Piece
+class Pawn #TODO< Piece
 
   attr_accessor :direction
   @direction = -1 if @color == 'w'
@@ -198,7 +199,7 @@ class Pawn < Piece
   end
 end
 
-module Rook < Piece
+module Rook #TODO< Piece
 
   def check_move(start, finish)
     startRow = @board.convert_location_to_row(start)
@@ -221,7 +222,7 @@ module Rook < Piece
 end
 
 module Knight
-  extend self, Piece
+  #TODO extend self, Piece
 
   def check_move(start, finish)
     startRow = @board.convert_location_to_row(start)
@@ -244,7 +245,7 @@ module Knight
 end
 
 module Bishop
-  extend self, Piece
+  #TODO extend self, Piece
 
   def check_move(start, finish)
     if valid_diagonal_line?(start, finish, @color)
@@ -261,7 +262,7 @@ module Bishop
 end
 
 module Queen
-  extend self, Piece
+  #TODO extend self, Piece
 
   def check_move(start, finish)
     startRow = @board.convert_location_to_row(start)
@@ -284,7 +285,7 @@ module Queen
 end
 
 module King
-  extend self, Piece
+  #TODO extend self, Piece
 end
 
 if __FILE__ == $0
