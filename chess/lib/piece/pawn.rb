@@ -1,95 +1,91 @@
-class Piece
-  attr_accessor :type, :color, :location, :board
+module Piece
+  class Pawn
+    attr_accessor :color, :row, :col, :direction,
 
-  def initialize(board, location)
-    @board = board
-    @location = location
-  end
-end
+    def initialize(color, row, col)
+      @color = color
+      @row = row
+      @col = col
+      @direction = @color == 'w' ? 1 : -1
+    end
 
-class Pawn < Piece
+  # def check_move(start, finish)
+  #   takingPiece = false
+  #   regMove = false
+  #   startJump = false
+  #   isValid = ''
+  #
+  #   regMove = true if (start[0]==finish[0] && (start[1] + @direction) == finish[1] && board.boardArray[finish[0]][finish[1]] == "--")
+  #
+  #   #The first check verifies the piece is on the starting row
+  #   startJump = true if (start[1]==(3.5+(-2.5*@direction)) && (start[1] + (@direction * 2)) == finish[1] && board.boardArray[finish[0]][finish[1]] == "--" && board.boardArray[finish[0]][finish[1]-@direction] == "--")
+  #
+  #   #TODO takingPiece
+  #
+  #   #TODO fix syntax
+  #   if (takingPiece || regMove || startJump)
+  #     isValid = "LEGAL"
+  #   else
+  #     isValid "ILLEGAL"
+  #   end
+  # end
 
-  attr_accessor :direction
-  @direction = -1 if @color == 'w'
+  def move_one(board)
+    newRow = @row + @direction
 
-  def checkMove(start, finish)
-    takingPiece = false
-    regMove = false
-    startJump = false
-    isValid = ''
-
-    regMove = true if (start[0]==finish[0] && (start[1] + @direction) == finish[1] && board.boardArray[finish[0]][finish[1]] == "--")
-
-    #The first check verifies the piece is on the starting row
-    startJump = true if (start[1]==(3.5+(-2.5*@direction)) && (start[1] + (@direction * 2)) == finish[1] && board.boardArray[finish[0]][finish[1]] == "--" && board.boardArray[finish[0]][finish[1]-@direction] == "--")
-
-    #TODO takingPiece
-
-    #TODO fix syntax
-    if (takingPiece || regMove || startJump)
-      isValid = "LEGAL"
+    if board[newRow][col].color == '--'
+      newPos = @col << newRow
     else
-      isValid "ILLEGAL"
+      nil
     end
   end
 
+  def move_two(board)
+    pawnStart = @color == 'w' ? 2 : 7
+    newRow = @row + 2 * @direction
+    isClear = board[newRow][@col].color == '--' && board[newRow-@direction][@col].color == '--'
 
-end
+    if @row == pawnStart && isClear
+      newPos = @col << newRow
+    else
+      nil
+    end
+  end
 
-module Rook < Piece
+  #TODO fix by incorporating isValid
+  def move_diagonal(board)
+    newRow = @row + @direction
+    leftCol = (@col.ord - 1).chr #decrement char
+    rightCol = @col.next
+    leftMove = (leftCol == '`') ? false : board[newRow][leftCol]
+    rightMove = (rightCol == 'aa') ? false : board[newRow][rightCol]
+    validArray = []
 
-  def check_move(start, finish)
-    isLine = false
-    direction = false
-    direction = 'col' if start[0]==finish[0]
-    direction = 'row' if start[1]==finish[1]
-
-    #check move is a line
-    return "ILLEGAL" if !(direction)
-
-    #check end location is not occupied by team
-    endContains = board[finish]
-    return "ILLEGAL" if endContains[0] == self.color
-
-    #check no pieces are jumped
-    case direction
-    when 'col'
-      #TODO stop short of final pos
-      #TODO ask about this syntax (single line would be long)
-      (start[0]..(finish[0])).each do |pos|
-        return "ILLEGAL" if boardArray[pos][start[1]] != "--"
-      end
-    when 'row'
-      #TODO stop short of final pos
-      (start[1]..(finish[1])).each do |pos|
-        return "ILLEGAL" if boardArray[start[0]][pos] != "--"
+    if leftMove
+      if leftMove.color == nil || leftMove.color == @color
+        validArray.push(nil)
+      else
+        validArray.push(leftCol << newRow)
       end
     end
-    "LEGAL"
+
+    if rightMove
+      if rightMove.color == nil || rightMove.color == @color
+        validArray.push(nil)
+      else
+        validArray.push(rightCol << newRow)
+      end
+    end
+    validArray
   end
-end
 
-module Knight
-  extend self, Piece
-end
+  def isValid(position, board)
+    out_of_x_range = (position[0] < 'a' || position[0] > 'h')
+    out_of_y_range = (position[1] < '1' || position[1] > '8')
+    valid = true
+    return false if out_of_x_range || out_of_y_range
+    valid = false if board[position[1]][position[0]].color == @color
+  end
 
-module Bishop
-  extend self, Piece
-end
 
-module Queen
-  extend self, Piece
-end
-
-module King
-  extend self, Piece
-end
-
-if __FILE__ == $0
-  test = ChessValidator.new
-  test.run("complex_board.txt", "complex_moves.txt")
-else
-  ap "__File__!=$0"
-  test = new ChessValidator#.run
-  test.run("complex_board.txt")
 end

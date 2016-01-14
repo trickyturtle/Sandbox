@@ -24,7 +24,6 @@ class ChessValidator
       @moveList.push(pair)
     end
     ap @moveList if DEBUG_CV
-    ap @moveList
   end
 
   def read_position(pair)
@@ -47,7 +46,7 @@ class Board
   attr_accessor :boardArray, :board
 
   def initialize
-    @boardArray ||= []
+    @boardHash ||= Hash.new{ |row,col| row[col] = Hash.new(&row.default_proc) }
     @board = self
   #  #Hash implementation
   #  @board = Hash.new "--"
@@ -65,9 +64,18 @@ class Board
 
   def read_board_state(boardInput)
     #Array implementation
-    File.open(boardInput).each { |row| @boardArray.push(row.split(" ")) }
+    rowNum = 1
+    File.open(boardInput).each do |line|
+      row = line.split(' ')
+      col = 'a'
+      row.each do |state|
+        @boardHash[rowNum][col] = state
+        col.succ!
+      end
+      rowNum += 1
+    end
     ap "after readBoard" if DEBUG_BOARD
-    ap @boardArray if DEBUG_BOARD
+    ap @boardHash if DEBUG_BOARD
   end
 
   def check_moves(moveList)
