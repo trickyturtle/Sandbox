@@ -51,5 +51,9 @@ module Piece
       return false if out_of_x_range || out_of_y_range
       valid = false if board[position[1]][position[0]].color == @color
     end
+
+    def get_move_list(board)
+      moveList = [move_vertical(board), move_horizontal(board)].flatten.compact
+    end
   end
 end

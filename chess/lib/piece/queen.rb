@@ -56,7 +56,7 @@ module Piece
       moveList = []
 
       moveMatrix.each do |xTransform|
-        newCol = @col + xTransform
+        newCol = (@col.ord + xTransform).chr
 
         moveMatrix.each do |yTransform|
           jumped = false
@@ -65,12 +65,16 @@ module Piece
           while isValid?(newCol << newRow, board) && !jumped
             moveList.push(newCol << newRow)
             jumped = true if board[newRow][newCol].color != '--'
-            newCol += xTransform
+            newCol = (newCol.ord + xTransform).chr
             newRow += yTransform
           end
         end
       end
       moveList
+    end
+    
+    def get_move_list(board)
+      moveList = [move_vertical(board), move_horizontal(board), move_diagonal(board)].flatten.compact
     end
   end
 end

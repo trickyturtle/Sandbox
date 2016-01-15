@@ -57,5 +57,9 @@ module Piece
       end
       moveList
     end
+
+    def get_move_list(board)
+      moveList = [move_vertical(board), move_horizontal(board), move_diagonal(board)].flatten.compact
+    end
   end
 end

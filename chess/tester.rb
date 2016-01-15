@@ -44,29 +44,31 @@ Dir.chdir(File.dirname(__FILE__))
 # ap board.boardArray
 # ap board2.boardArray
 
-# hash1 = Hash.new{ |row,col| row[col] = Hash.new(&row.default_proc) }
-# hash2 = Hash.new{ |row,col| row[col] = Hash.new (&row => '--') }
-#
-# hash1[:'1'][:a]
-# hash1[2][:b]
-# hash1[:'3'][:c] = 'bK'
-# hash1[4][:d] = 'wR'
-# hash1[:'1'][:e] = "bQ"
-# hash1[2][:f] = 'wT'
-#
+hash1 = Hash.new{ |row,col| row[col] = Hash.new(&row.default_proc) }
+#hash2 = Hash.new{ |row,col| row[col] = Hash.new (&row => '--') }
+
+hash1[:'1'][:a]
+hash1[2][:b]
+hash1[:'3'][:c] = 'bK'
+hash1[4][:d] = 'wR'
+hash1[:'1'][:e] = "bQ"
+hash1[2][:f] = 'wT'
+
 # hash2[:'1'][:a]
 # hash2[2][:b]
 # hash2[:'3'][:c] = 'bK'
 # hash2[4][:d] = 'wR'
 # hash2[:'1'][:e] = "bQ"
 # hash2[2][:f] = 'wT'
-#
-# ap hash1
+
+
+
+hash1.each do |key, value|
+  puts key
+  puts value
+  value.each do |key2, value2|
+    puts key2
+    puts value2
+  end
+end
 # ap hash2
-@col = 'a'
-leftCol = (@col.ord - 1).chr #decrement char
-ap leftCol
-ap leftCol == '`'
-@col = 'z'
-rightCol = @col.next
-ap rightCol == 'aa'
