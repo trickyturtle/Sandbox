@@ -15,8 +15,16 @@ module Piece
       out_of_x_range = (position[0] < 'a' || position[0] > 'h')
       out_of_y_range = (position[1] < '1' || position[1] > '8')
       valid = true
+      # #TODO
+      # ap position
+      # ap position[0]
+      # ap position[1]
+      # ap out_of_x_range
+      # ap out_of_y_range
       return false if out_of_x_range || out_of_y_range
-      valid = false if board[position[1]][position[0]].color == @color
+
+      valid = false if board[position[1].to_i][position[0]].color == @color
+      valid
     end
 
     def move_vertical(board)

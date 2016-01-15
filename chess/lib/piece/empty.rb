@@ -9,7 +9,7 @@ module Piece
     end
 
     def get_move_list(board)
-      [nil]
+      []
     end
   end
 end

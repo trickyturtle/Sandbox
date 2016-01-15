@@ -48,10 +48,6 @@ module Piece
       pawnStart = @color == 'w' ? 2 : 7
       newRow = @row + 2 * @direction
       piece = board[newRow][@col]
-      #TODO
-      ap piece
-      ap newRow
-      ap @col
       isClear = board[newRow][@col].color == '--' && board[newRow-@direction][@col].color == '--'
 
       if @row == pawnStart && isClear
@@ -104,7 +100,8 @@ module Piece
       out_of_y_range = (position[1] < '1' || position[1] > '8')
       valid = true
       return false if out_of_x_range || out_of_y_range
-      valid = false if board[position[1]][position[0]].color == @color
+      valid = false if board[position[1].to_i][position[0]].color == @color
+      valid
     end
 
     def get_move_list(board)

@@ -5,7 +5,7 @@ require_relative 'lib/board'
 #require File.expand_path('lib/piece/piece')
 
 # USE .succ for string?
-puts Dir.pwd
+
 Dir.chdir(File.dirname(__FILE__))
 DEBUG_BOARD = false
 DEBUG_CV = false
