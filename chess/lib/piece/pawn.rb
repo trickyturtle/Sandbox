@@ -1,6 +1,9 @@
+
+
 module Piece
   class Pawn
     attr_accessor :color, :row, :col, :direction
+    DEBUG_PAWN = false
 
     def initialize(color, row, col)
       @color = color
@@ -34,19 +37,25 @@ module Piece
       newRow = @row + @direction
 
       if board[newRow][col].color == '--'
-        newPos = @col << newRow
+        newPos = "#{@col}#{newRow.to_s}"
       else
         nil
       end
     end
 
     def move_two(board)
+      #ap board
       pawnStart = @color == 'w' ? 2 : 7
       newRow = @row + 2 * @direction
+      piece = board[newRow][@col]
+      #TODO
+      ap piece
+      ap newRow
+      ap @col
       isClear = board[newRow][@col].color == '--' && board[newRow-@direction][@col].color == '--'
 
       if @row == pawnStart && isClear
-        newPos = @col << newRow
+        newPos = "#{@col}#{newRow.to_s}"
       else
         nil
       end
@@ -57,23 +66,34 @@ module Piece
       newRow = @row + @direction
       leftCol = (@col.ord - 1).chr #decrement char
       rightCol = @col.next
-      leftMove = (leftCol == '`') ? false : board[newRow][leftCol]
-      rightMove = (rightCol == 'aa') ? false : board[newRow][rightCol]
+      leftMove = board[newRow].has_key?(leftCol) ? board[newRow][leftCol] : false
+      rightMove = board[newRow].has_key?(rightCol) ? board[newRow][rightCol] : false
       validArray = []
-
-      if leftMove
-        if leftMove.color == nil || leftMove.color == @color
-          validArray.push(nil)
-        else
-          validArray.push(leftCol << newRow)
-        end
+      if DEBUG_PAWN
+        ap "in pawn: #{board}"
+        ap newRow
+        ap rightCol
+        ap leftCol
+        ap leftMove
+        ap rightMove
       end
 
-      if rightMove
-        if rightMove.color == nil || rightMove.color == @color
+
+
+      if leftMove
+        if leftMove.color == '--' || leftMove.color == @color
           validArray.push(nil)
         else
-          validArray.push(rightCol << newRow)
+          validArray.push("#{leftCol}#{newRow.to_s}")
+        end
+      end
+      ap rightMove if DEBUG_PAWN
+
+      if rightMove
+        if rightMove.color == '--' || rightMove.color == @color
+          validArray.push(nil)
+        else
+          validArray.push("#{rightCol}#{newRow.to_s}")
         end
       end
       validArray

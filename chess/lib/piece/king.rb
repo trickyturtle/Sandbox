@@ -25,7 +25,7 @@ module Piece
 
       moveMatrix.each do |transform|
         newRow = @row + transform
-        moveList.push(@col << newRow) if isValid?(@col << newRow, board)
+        moveList.push("#{@col}#{newRow.to_s}") if isValid?("#{@col}#{newRow.to_s}", board)
       end
 
       moveList
@@ -37,7 +37,7 @@ module Piece
 
       moveMatrix.each do |transform|
         newCol = (@col.ord + transform).chr
-        moveList.push(newCol << @row) if isValid?(newCol << @row, board)
+        moveList.push("#{newCol}#{@row.to_s}") if isValid?("#{newCol}#{@row.to_s}", board)
       end
 
       moveList
@@ -53,8 +53,8 @@ module Piece
         moveMatrix.each do |yTransform|
           newRow = @row + yTransform
 
-          if isValid?(newCol << newRow, board)
-            moveList.push(newCol << newRow)
+          if isValid?("#{newCol}#{newRow.to_s}", board)
+            moveList.push("#{newCol}#{newRow.to_s}")
           end
         end
       end

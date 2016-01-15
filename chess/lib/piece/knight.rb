@@ -28,7 +28,7 @@ module Piece
             yOffset = (3 - displacement) * ySign
             newCol = (@col.ord + xOffset).chr
             newRow = @row + yOffset
-            newPos = newCol << newRow
+            newPos = "#{newCol}#{newRow.to_s}"
             moveList.push(newPos) if isValid?(newPos, board)
           end
         end

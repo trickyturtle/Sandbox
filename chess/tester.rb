@@ -71,4 +71,6 @@ hash1.each do |key, value|
     puts value2
   end
 end
+
+ap '--'.next
 # ap hash2

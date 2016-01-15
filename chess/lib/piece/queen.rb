@@ -23,8 +23,8 @@ module Piece
       moveMatrix.each do |transform|
         newRow = @row + transform
         jumped = false
-        while isValid?(@col << newRow, board) && !jumped
-          moveList.push(@col << newRow)
+        while isValid?("#{@col}#{newRow.to_s}", board) && !jumped
+          moveList.push("#{@col}#{newRow.to_s}")
           jumped = true if board[newRow][@col].color != '--'
           newRow += transform
         end
@@ -41,8 +41,8 @@ module Piece
         newCol = (@col.ord + transform).chr
         jumped = false
 
-        while isValid?(newCol << @row, board) && !jumped
-          moveList.push(newCol << @row)
+        while isValid?("#{newCol}#{@row.to_s}", board) && !jumped
+          moveList.push("#{newCol}#{@row.to_s}")
           jumped = true if board[@row][newCol].color != '--'
           newCol = (newCol.ord + transform).chr
         end
@@ -62,8 +62,8 @@ module Piece
           jumped = false
           newRow = @row + yTransform
 
-          while isValid?(newCol << newRow, board) && !jumped
-            moveList.push(newCol << newRow)
+          while isValid?("#{newCol}#{newRow.to_s}", board) && !jumped
+            moveList.push("#{newCol}#{newRow.to_s}")
             jumped = true if board[newRow][newCol].color != '--'
             newCol = (newCol.ord + xTransform).chr
             newRow += yTransform

@@ -19,8 +19,8 @@ module Piece
           jumped = false
           newRow = @row + yTransform
 
-          while isValid?(newCol << newRow, board) && !jumped
-            moveList.push(newCol << newRow)
+          while isValid?("#{newCol}#{newRow.to_s}", board) && !jumped
+            moveList.push("#{newCol}#{newRow.to_s}")
             jumped = true if board[newRow][newCol].color != '--'
             newCol = (newCol.ord + xTransform).chr
             newRow += yTransform
@@ -30,7 +30,7 @@ module Piece
       moveList
     end
 
-    def isValid(position, board)
+    def isValid?(position, board)
       out_of_x_range = (position[0] < 'a' || position[0] > 'h')
       out_of_y_range = (position[1] < '1' || position[1] > '8')
       valid = true

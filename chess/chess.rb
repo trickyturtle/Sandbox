@@ -24,8 +24,8 @@ module ChessValidator
     board.read_board_state(boardState)
     ap board if DEBUG_CV
     ap board.boardArray if DEBUG_CV
-    board.read_moves(moves)
     board.get_move_lists
+    board.read_moves(moves)
     board.check_moves
   end
 
