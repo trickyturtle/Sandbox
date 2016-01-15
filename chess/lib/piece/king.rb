@@ -1,5 +1,8 @@
 module Piece
   class King
+    #extend ChessValidator::Piece
+    #include ChessValidator
+
     attr_accessor :color, :row, :col
 
     def initialize(color, row, col)
